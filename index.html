@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japhoo — Order Now</title>
+<style>
+  :root{
+    --ink:#1c1a17;
+    --paper:#f6f1e7;
+    --card:#ffffff;
+    --accent:#c9622a;
+    --accent-dark:#a3491b;
+    --line:#e4dccb;
+    --green:#25D366;
+    --green-dark:#1ebe57;
+    --muted:#7a7264;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  header{
+    background:var(--ink);
+    color:var(--paper);
+    padding:22px 20px 26px;
+    text-align:center;
+    position:relative;
+  }
+  header h1{
+    margin:0;
+    font-size:28px;
+    letter-spacing:2px;
+    font-weight:800;
+    text-transform:uppercase;
+  }
+  header p{
+    margin:6px 0 0;
+    font-size:13px;
+    color:#cfc7b6;
+    letter-spacing:0.5px;
+  }
+  .tabs{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:16px auto 0;
+    max-width:420px;
+    padding:0 16px;
+  }
+  .tab-btn{
+    flex:1;
+    padding:10px 8px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--card);
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .tab-btn.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  main{
+    max-width:1000px;
+    margin:0 auto;
+    padding:22px 16px 140px;
+  }
+  .section-title{
+    font-size:18px;
+    font-weight:800;
+    margin:22px 4px 12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:14px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:14px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+  }
+  .card img{
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    background:#eee;
+    display:block;
+  }
+  .card-body{
+    padding:10px 12px 12px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    flex:1;
+  }
+  .card-name{
+    font-weight:700;
+    font-size:14px;
+    line-height:1.25;
+  }
+  .card-price{
+    font-size:13px;
+    color:var(--accent-dark);
+    font-weight:700;
+  }
+  .card-controls{
+    margin-top:auto;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  select{
+    width:100%;
+    padding:6px 8px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    font-size:12px;
+    background:#fff;
+  }
+  .qty-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:6px;
+  }
+  .qty-row .qbtn{
+    width:26px;
+    height:26px;
+    border-radius:6px;
+    border:1px solid var(--line);
+    background:#fff;
+    font-size:15px;
+    line-height:1;
+    cursor:pointer;
+  }
+  .qty-val{
+    font-weight:700;
+    font-size:13px;
+    min-width:16px;
+    text-align:center;
+  }
+  .add-btn{
+    width:100%;
+    padding:8px;
+    border:none;
+    border-radius:8px;
+    background:var(--ink);
+    color:#fff;
+    font-weight:700;
+    font-size:12px;
+    cursor:pointer;
+    letter-spacing:0.4px;
+  }
+  .add-btn:active{transform:scale(0.98);}
+  .add-btn.added{background:var(--green-dark);}
+
+  /* Cart bar */
+  .cart-bar{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:var(--ink);
+    color:#fff;
+    padding:12px 16px;
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    box-shadow:0 -4px 18px rgba(0,0,0,0.25);
+    z-index:40;
+  }
+  .cart-bar.visible{display:flex;}
+  .cart-bar .info{font-size:13px;}
+  .cart-bar .info b{font-size:15px;}
+  .cart-bar button{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:10px 16px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+  }
+
+  /* Modal */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(20,17,12,0.55);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    z-index:50;
+  }
+  .overlay.visible{display:flex;}
+  .sheet{
+    background:var(--paper);
+    width:100%;
+    max-width:520px;
+    border-radius:18px 18px 0 0;
+    max-height:88vh;
+    overflow-y:auto;
+    padding:20px 18px 24px;
+  }
+  .sheet h2{
+    margin:0 0 12px;
+    font-size:19px;
+    letter-spacing:0.5px;
+  }
+  .cart-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    font-size:13px;
+    gap:8px;
+  }
+  .cart-item .meta{flex:1;}
+  .cart-item .meta .nm{font-weight:700;}
+  .cart-item .meta .sub{color:var(--muted); font-size:12px;}
+  .cart-item .remove{
+    background:none;
+    border:none;
+    color:#b23b3b;
+    font-size:12px;
+    cursor:pointer;
+    text-decoration:underline;
+  }
+  .cart-total{
+    display:flex;
+    justify-content:space-between;
+    font-weight:800;
+    font-size:16px;
+    padding:14px 0 6px;
+  }
+  .field{margin-bottom:12px;}
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    margin-bottom:4px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  .field input, .field textarea{
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    font-size:14px;
+    font-family:inherit;
+    background:#fff;
+  }
+  .field textarea{resize:vertical; min-height:60px;}
+  .whatsapp-btn{
+    width:100%;
+    background:var(--green);
+    color:#fff;
+    border:none;
+    padding:14px;
+    border-radius:12px;
+    font-weight:800;
+    font-size:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    cursor:pointer;
+    margin-top:10px;
+  }
+  .whatsapp-btn:active{background:var(--green-dark);}
+  .close-btn{
+    position:absolute;
+    top:14px;
+    right:18px;
+    background:none;
+    border:none;
+    font-size:22px;
+    color:var(--muted);
+    cursor:pointer;
+  }
+  .sheet-wrap{position:relative;}
+  .empty-note{
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    padding:20px 0;
+  }
+  .footer-note{
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    padding:24px 16px 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Japhoo</h1>
+  <p>the bl~end of nature and art</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="caps">Caps</button>
+  <button class="tab-btn" data-tab="tees">T-Shirts</button>
+</div>
+
+<main>
+  <section id="tab-caps">
+    <div class="section-title">Caps · NPR 1,500</div>
+    <div class="grid" id="grid-caps"></div>
+  </section>
+
+  <section id="tab-tees" style="display:none;">
+    <div class="section-title">T-Shirts · NPR 1,350</div>
+    <div class="grid" id="grid-tees"></div>
+  </section>
+
+  <p class="footer-note">Prices shown are estimates — final total is confirmed by Japhoo over WhatsApp before payment.</p>
+</main>
+
+<div class="cart-bar" id="cartBar">
+  <div class="info"><b id="cartCount">0</b> items · NPR <b id="cartTotal">0</b></div>
+  <button id="openCartBtn">View Order</button>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sheet sheet-wrap">
+    <button class="close-btn" id="closeSheet">&times;</button>
+    <h2>Your Order</h2>
+    <div id="cartItems"></div>
+    <div id="cartEmpty" class="empty-note" style="display:none;">Your cart is empty. Add something nice!</div>
+    <div class="cart-total"><span>Total</span><span>NPR <span id="sheetTotal">0</span></span></div>
+
+    <div class="field">
+      <label>Your Name</label>
+      <input type="text" id="custName" placeholder="e.g. Sujata Shrestha">
+    </div>
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" id="custPhone" placeholder="98XXXXXXXX">
+    </div>
+    <div class="field">
+      <label>Delivery Address</label>
+      <textarea id="custAddress" placeholder="Street, area, city"></textarea>
+    </div>
+    <div class="field">
+      <label>Notes (optional)</label>
+      <textarea id="custNotes" placeholder="Any special instructions"></textarea>
+    </div>
+
+    <button class="whatsapp-btn" id="sendWhatsapp">
+      Send Order on WhatsApp
+    </button>
+  </div>
+</div>
+
+<script>
+const WHATSAPP_NUMBER = "9779851427975"; // +977 9851427975
+
+const CAP_PRICE = 1500;
+const TEE_PRICE = 1350;
+const SIZES = ["S","M","L","XL","XXL"];
+const UNISEX_ONLY_BASES = ["pool","3musk","thehood","mahaalife","jk","greed","fearme","battleground"];
+function genderOptionsFor(id){
+  const base = id.replace(/^tee-/, "").split("-")[0];
+  return UNISEX_ONLY_BASES.includes(base) ? ["Unisex"] : ["Men","Women"];
+}
+
+const caps = [
+  {id:"cap-bob", name:"Bob", img:"assets/cap-bob.jpg"},
+  {id:"cap-camper", name:"Camper", img:"assets/cap-camper.jpg"},
+  {id:"cap-doodle", name:"Doodle", img:"assets/cap-doodle.jpg"},
+  {id:"cap-everest", name:"Everest", img:"assets/cap-everest.jpg"},
+  {id:"cap-gokyo", name:"Gokyo", img:"assets/cap-gokyo.jpg"},
+  {id:"cap-hand", name:"Hand", img:"assets/cap-hand.jpg"},
+  {id:"cap-hike", name:"Hike", img:"assets/cap-hike.jpg"},
+  {id:"cap-horizon", name:"Horizon", img:"assets/cap-horizon.jpg"},
+  {id:"cap-lostktm", name:"Lost KTM", img:"assets/cap-lostktm.jpg"},
+  {id:"cap-msw", name:"MSW", img:"assets/cap-msw.jpg"},
+  {id:"cap-nepal", name:"Nepal", img:"assets/cap-nepal.jpg"},
+  {id:"cap-organic", name:"Organic", img:"assets/cap-organic.jpg"},
+  {id:"cap-rise", name:"Rise", img:"assets/cap-rise.jpg"},
+  {id:"cap-shey", name:"Shey", img:"assets/cap-shey.jpg"},
+  {id:"cap-ticket", name:"Ticket", img:"assets/cap-ticket.jpg"},
+].map(p => ({...p, price:CAP_PRICE, hasSize:false}));
+
+const tees = [
+  {id:"tee-3musk-cg", name:"3Musk Cg", img:"assets/tee-3musk-cg.jpg"},
+  {id:"tee-3musk-m", name:"3Musk M", img:"assets/tee-3musk-m.jpg"},
+  {id:"tee-rp-e", name:"Rp E", img:"assets/tee-rp-e.jpg"},
+  {id:"tee-animal-berry", name:"Animal Berry", img:"assets/tee-animal-berry.jpg"},
+  {id:"tee-anna-berry", name:"Anna Berry", img:"assets/tee-anna-berry.jpg"},
+  {id:"tee-battleground-berry", name:"Battleground Berry", img:"assets/tee-battleground-berry.jpg"},
+  {id:"tee-battleground-cg", name:"Battleground Cg", img:"assets/tee-battleground-cg.jpg"},
+  {id:"tee-bhairab-p", name:"Bhairab P", img:"assets/tee-bhairab-p.jpg"},
+  {id:"tee-bly-ns", name:"Bly Ns", img:"assets/tee-bly-ns.jpg"},
+  {id:"tee-br-sg", name:"Br Sg", img:"assets/tee-br-sg.jpg"},
+  {id:"tee-climb-berry", name:"Climb Berry", img:"assets/tee-climb-berry.jpg"},
+  {id:"tee-culture-c", name:"Culture C", img:"assets/tee-culture-c.jpg"},
+  {id:"tee-destination-z", name:"Destination Z", img:"assets/tee-destination-z.jpg"},
+  {id:"tee-estr-es", name:"Estr Es", img:"assets/tee-estr-es.jpg"},
+  {id:"tee-estr-p", name:"Estr P", img:"assets/tee-estr-p.jpg"},
+  {id:"tee-fearme-es", name:"Fearme Es", img:"assets/tee-fearme-es.jpg"},
+  {id:"tee-fls-p", name:"Fls P", img:"assets/tee-fls-p.jpg"},
+  {id:"tee-greed-es", name:"Greed Es", img:"assets/tee-greed-es.jpg"},
+  {id:"tee-greed-k", name:"Greed K", img:"assets/tee-greed-k.jpg"},
+  {id:"tee-hand-es", name:"Hand Es", img:"assets/tee-hand-es.jpg"},
+  {id:"tee-ins-e", name:"Ins E", img:"assets/tee-ins-e.jpg"},
+  {id:"tee-jk-p", name:"Jk P", img:"assets/tee-jk-p.jpg"},
+  {id:"tee-kala-p", name:"Kala P", img:"assets/tee-kala-p.jpg"},
+  {id:"tee-kp-m", name:"Kp M", img:"assets/tee-kp-m.jpg"},
+  {id:"tee-ktm-cg", name:"Ktm Cg", img:"assets/tee-ktm-cg.jpg"},
+  {id:"tee-ll-p", name:"Ll P", img:"assets/tee-ll-p.jpg"},
+  {id:"tee-ls-es", name:"Ls Es", img:"assets/tee-ls-es.jpg"},
+  {id:"tee-macha-p", name:"Macha P", img:"assets/tee-macha-p.jpg"},
+  {id:"tee-mahaalife-m", name:"Mahaalife M", img:"assets/tee-mahaalife-m.jpg"},
+  {id:"tee-mahaalife-p", name:"Mahaalife P", img:"assets/tee-mahaalife-p.jpg"},
+  {id:"tee-momo-cg", name:"Momo Cg", img:"assets/tee-momo-cg.jpg"},
+  {id:"tee-mr-z", name:"Mr Z", img:"assets/tee-mr-z.jpg"},
+  {id:"tee-nd-ad", name:"Nd Ad", img:"assets/tee-nd-ad.jpg"},
+  {id:"tee-nd-berry", name:"Nd Berry", img:"assets/tee-nd-berry.jpg"},
+  {id:"tee-nepal-p", name:"Nepal P", img:"assets/tee-nepal-p.jpg"},
+  {id:"tee-nepalv3-k", name:"Nepalv3 K", img:"assets/tee-nepalv3-k.jpg"},
+  {id:"tee-pool-z", name:"Pool Z", img:"assets/tee-pool-z.jpg"},
+  {id:"tee-poonhill-berry", name:"Poonhill Berry", img:"assets/tee-poonhill-berry.jpg"},
+  {id:"tee-potrait-e", name:"Potrait E", img:"assets/tee-potrait-e.jpg"},
+  {id:"tee-pulu-es", name:"Pulu Es", img:"assets/tee-pulu-es.jpg"},
+  {id:"tee-seekers-z", name:"Seekers Z", img:"assets/tee-seekers-z.jpg"},
+  {id:"tee-sunset-wm", name:"Sunset Wm", img:"assets/tee-sunset-wm.jpg"},
+  {id:"tee-tempo-z", name:"Tempo Z", img:"assets/tee-tempo-z.jpg"},
+  {id:"tee-thehood-berry", name:"Thehood Berry", img:"assets/tee-thehood-berry.jpg"},
+  {id:"tee-thehood-z", name:"Thehood Z", img:"assets/tee-thehood-z.jpg"},
+  {id:"tee-ticketv2-sg", name:"Ticketv2 Sg", img:"assets/tee-ticketv2-sg.jpg"},
+  {id:"tee-ticketvs-cg", name:"Ticketvs Cg", img:"assets/tee-ticketvs-cg.jpg"},
+  {id:"tee-tob-es", name:"Tob Es", img:"assets/tee-tob-es.jpg"},
+  {id:"tee-tos-c", name:"Tos C", img:"assets/tee-tos-c.jpg"},
+  {id:"tee-vajra-cg", name:"Vajra Cg", img:"assets/tee-vajra-cg.jpg"},
+  {id:"tee-vajra-p", name:"Vajra P", img:"assets/tee-vajra-p.jpg"},
+  {id:"tee-vk-p", name:"Vk P", img:"assets/tee-vk-p.jpg"},
+  {id:"tee-yes-p", name:"Yes P", img:"assets/tee-yes-p.jpg"},
+].map(p => ({...p, price:TEE_PRICE, hasSize:true, hasGender:true, genderOptions:genderOptionsFor(p.id)}));
+
+let cart = {}; // key: id[:size] -> {name, price, qty, size}
+
+function renderGrid(list, containerId){
+  const el = document.getElementById(containerId);
+  el.innerHTML = list.map(p => `
+    <div class="card" data-id="${p.id}">
+      <img src="${p.img}" alt="${p.name}" loading="lazy">
+      <div class="card-body">
+        <div class="card-name">${p.name}</div>
+        <div class="card-price">NPR ${p.price.toLocaleString()}</div>
+        <div class="card-controls">
+          ${p.hasGender ? `<select class="gender-select">${p.genderOptions.map(g=>`<option value="${g}">${g}</option>`).join("")}</select>` : ""}
+          ${p.hasSize ? `<select class="size-select">${SIZES.map(s=>`<option value="${s}">${s}</option>`).join("")}</select>` : ""}
+          <div class="qty-row">
+            <button class="qbtn" data-action="dec">−</button>
+            <span class="qty-val">1</span>
+            <button class="qbtn" data-action="inc">+</button>
+          </div>
+          <button class="add-btn" data-action="add">Add to Order</button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  el.querySelectorAll(".card").forEach(card => {
+    const id = card.dataset.id;
+    const product = list.find(p => p.id === id);
+    const qtyEl = card.querySelector(".qty-val");
+    let qty = 1;
+    card.querySelector('[data-action="inc"]').addEventListener("click", () => {
+      qty = Math.min(qty+1, 20);
+      qtyEl.textContent = qty;
+    });
+    card.querySelector('[data-action="dec"]').addEventListener("click", () => {
+      qty = Math.max(qty-1, 1);
+      qtyEl.textContent = qty;
+    });
+    card.querySelector('[data-action="add"]').addEventListener("click", (e) => {
+      const size = product.hasSize ? card.querySelector(".size-select").value : null;
+      const gender = product.hasGender ? card.querySelector(".gender-select").value : null;
+      const key = [id, size, gender].filter(Boolean).join(":");
+      if(!cart[key]){
+        cart[key] = {name:product.name, price:product.price, qty:0, size, gender};
+      }
+      cart[key].qty += qty;
+      updateCartUI();
+      const btn = e.target;
+      btn.textContent = "Added ✓";
+      btn.classList.add("added");
+      setTimeout(()=>{ btn.textContent="Add to Order"; btn.classList.remove("added"); }, 900);
+    });
+  });
+}
+
+function variantLabel(item){
+  const parts = [item.gender, item.size].filter(Boolean);
+  return parts.length ? ` (${parts.join(", ")})` : "";
+}
+
+function cartCountTotal(){
+  let count=0, total=0;
+  Object.values(cart).forEach(item=>{
+    count += item.qty;
+    total += item.qty * item.price;
+  });
+  return {count, total};
+}
+
+function updateCartUI(){
+  const {count, total} = cartCountTotal();
+  document.getElementById("cartCount").textContent = count;
+  document.getElementById("cartTotal").textContent = total.toLocaleString();
+  document.getElementById("sheetTotal").textContent = total.toLocaleString();
+  document.getElementById("cartBar").classList.toggle("visible", count>0);
+
+  const itemsEl = document.getElementById("cartItems");
+  const emptyEl = document.getElementById("cartEmpty");
+  const keys = Object.keys(cart).filter(k=>cart[k].qty>0);
+  if(keys.length===0){
+    itemsEl.innerHTML = "";
+    emptyEl.style.display = "block";
+  } else {
+    emptyEl.style.display = "none";
+    itemsEl.innerHTML = keys.map(k => {
+      const item = cart[k];
+      return `
+        <div class="cart-item">
+          <div class="meta">
+            <div class="nm">${item.name}${variantLabel(item)}</div>
+            <div class="sub">${item.qty} × NPR ${item.price.toLocaleString()} = NPR ${(item.qty*item.price).toLocaleString()}</div>
+          </div>
+          <button class="remove" data-key="${k}">Remove</button>
+        </div>
+      `;
+    }).join("");
+    itemsEl.querySelectorAll(".remove").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        delete cart[btn.dataset.key];
+        updateCartUI();
+      });
+    });
+  }
+}
+
+function buildWhatsappMessage(){
+  const {total} = cartCountTotal();
+  const name = document.getElementById("custName").value.trim();
+  const phone = document.getElementById("custPhone").value.trim();
+  const address = document.getElementById("custAddress").value.trim();
+  const notes = document.getElementById("custNotes").value.trim();
+
+  let lines = [];
+  lines.push("Hi Japhoo! I'd like to place an order:");
+  lines.push("");
+  Object.values(cart).filter(i=>i.qty>0).forEach(item=>{
+    lines.push(`• ${item.qty}x ${item.name}${variantLabel(item)} — NPR ${(item.qty*item.price).toLocaleString()}`);
+  });
+  lines.push("");
+  lines.push(`Total: NPR ${total.toLocaleString()}`);
+  lines.push("");
+  lines.push(`Name: ${name || "-"}`);
+  lines.push(`Phone: ${phone || "-"}`);
+  lines.push(`Address: ${address || "-"}`);
+  if(notes) lines.push(`Notes: ${notes}`);
+
+  return lines.join("\n");
+}
+
+document.getElementById("sendWhatsapp").addEventListener("click", ()=>{
+  const {count} = cartCountTotal();
+  if(count===0){
+    alert("Add at least one item before sending your order.");
+    return;
+  }
+  const name = document.getElementById("custName").value.trim();
+  const phone = document.getElementById("custPhone").value.trim();
+  if(!name || !phone){
+    alert("Please add your name and phone number so Japhoo can confirm your order.");
+    return;
+  }
+  const msg = encodeURIComponent(buildWhatsappMessage());
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
+});
+
+document.getElementById("openCartBtn").addEventListener("click", ()=>{
+  document.getElementById("overlay").classList.add("visible");
+});
+document.getElementById("closeSheet").addEventListener("click", ()=>{
+  document.getElementById("overlay").classList.remove("visible");
+});
+document.getElementById("overlay").addEventListener("click", (e)=>{
+  if(e.target.id === "overlay") document.getElementById("overlay").classList.remove("visible");
+});
+
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const tab = btn.dataset.tab;
+    document.getElementById("tab-caps").style.display = tab==="caps" ? "block" : "none";
+    document.getElementById("tab-tees").style.display = tab==="tees" ? "block" : "none";
+  });
+});
+
+renderGrid(caps, "grid-caps");
+renderGrid(tees, "grid-tees");
+updateCartUI();
+</script>
+
+</body>
+</html>
