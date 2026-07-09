@@ -392,16 +392,16 @@
     <div class="cart-total"><span>Total</span><span>NPR <span id="sheetTotal">0</span></span></div>
 
     <div class="field">
-      <label>Your Name</label>
-      <input type="text" id="custName" placeholder="e.g. Sujata Shrestha">
+      <label>Your Name *</label>
+      <input type="text" id="custName" placeholder="e.g. Sujata Shrestha" required>
     </div>
     <div class="field">
-      <label>Phone Number</label>
-      <input type="tel" id="custPhone" placeholder="98XXXXXXXX">
+      <label>Phone Number *</label>
+      <input type="tel" id="custPhone" placeholder="98XXXXXXXX" required>
     </div>
     <div class="field">
-      <label>Delivery Address</label>
-      <textarea id="custAddress" placeholder="Street, area, city"></textarea>
+      <label>Delivery Address *</label>
+      <textarea id="custAddress" placeholder="Street, area, city" required></textarea>
     </div>
     <div class="field">
       <label>Notes (optional)</label>
@@ -653,8 +653,9 @@ document.getElementById("sendWhatsapp").addEventListener("click", ()=>{
   }
   const name = document.getElementById("custName").value.trim();
   const phone = document.getElementById("custPhone").value.trim();
-  if(!name || !phone){
-    alert("Please add your name and phone number so Japhoo can confirm your order.");
+  const address = document.getElementById("custAddress").value.trim();
+  if(!name || !phone || !address){
+    alert("Please add your name, phone number, and delivery address so Japhoo can confirm your order.");
     return;
   }
   const msg = encodeURIComponent(buildWhatsappMessage());
