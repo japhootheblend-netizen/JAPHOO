@@ -309,6 +309,44 @@
     font-size:12px;
     padding:24px 16px 8px;
   }
+  .section-title-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:22px 4px 12px;
+    gap:10px;
+  }
+  .section-title-row .section-title{margin:0;}
+  .sizechart-btn{
+    padding:8px 14px;
+    border-radius:999px;
+    border:1px solid var(--ink);
+    background:#fff;
+    color:var(--ink);
+    font-weight:700;
+    font-size:12px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .sizechart-imgs{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .sizechart-imgs img{
+    width:100%;
+    border-radius:12px;
+    border:1px solid var(--line);
+    display:block;
+  }
+  .sizechart-imgs .label{
+    font-weight:700;
+    font-size:13px;
+    margin-bottom:6px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:var(--muted);
+  }
 </style>
 </head>
 <body>
@@ -330,7 +368,10 @@
   </section>
 
   <section id="tab-tees" style="display:none;">
-    <div class="section-title">T-Shirts · NPR 1,350</div>
+    <div class="section-title-row">
+      <div class="section-title">T-Shirts · NPR 1,350</div>
+      <button class="sizechart-btn" id="openSizeChart">Size Chart</button>
+    </div>
     <div class="grid" id="grid-tees"></div>
   </section>
 
@@ -370,6 +411,23 @@
     <button class="whatsapp-btn" id="sendWhatsapp">
       Send Order on WhatsApp
     </button>
+  </div>
+</div>
+
+<div class="overlay" id="sizeChartOverlay">
+  <div class="sheet sheet-wrap">
+    <button class="close-btn" id="closeSizeChart">&times;</button>
+    <h2>Size Chart</h2>
+    <div class="sizechart-imgs">
+      <div>
+        <div class="label">Unisex</div>
+        <img src="assets/sizechart-unisex.jpg" alt="Unisex size chart">
+      </div>
+      <div>
+        <div class="label">Women</div>
+        <img src="assets/sizechart-women.jpg" alt="Women size chart">
+      </div>
+    </div>
   </div>
 </div>
 
@@ -611,6 +669,16 @@ document.getElementById("closeSheet").addEventListener("click", ()=>{
 });
 document.getElementById("overlay").addEventListener("click", (e)=>{
   if(e.target.id === "overlay") document.getElementById("overlay").classList.remove("visible");
+});
+
+document.getElementById("openSizeChart").addEventListener("click", ()=>{
+  document.getElementById("sizeChartOverlay").classList.add("visible");
+});
+document.getElementById("closeSizeChart").addEventListener("click", ()=>{
+  document.getElementById("sizeChartOverlay").classList.remove("visible");
+});
+document.getElementById("sizeChartOverlay").addEventListener("click", (e)=>{
+  if(e.target.id === "sizeChartOverlay") document.getElementById("sizeChartOverlay").classList.remove("visible");
 });
 
 document.querySelectorAll(".tab-btn").forEach(btn=>{
