@@ -4,31 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JAPHOO — Order Caps & Graphic Tees | Nepal-made</title>
-<meta name="description" content="JAPHOO — the blend of nature and art. Nepal-made graphic tees (NPR 1,400) and trucker caps (NPR 1,500). Order easily over WhatsApp, pay after we confirm.">
-<meta name="theme-color" content="#1c1a17">
+<meta name="description" content="JAPHOO — The Perfect Bl~end of Nature & Art. Nepal-born streetwear: graphic tees (NPR 1,400) and caps (NPR 1,500). Order over WhatsApp, pay after we confirm.">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23fff'/%3E%3Ccircle cx='22' cy='32' r='11' fill='none' stroke='%230A0A0A' stroke-width='4'/%3E%3Ccircle cx='22' cy='32' r='4' fill='%230A0A0A'/%3E%3Ccircle cx='45' cy='32' r='11' fill='none' stroke='%230A0A0A' stroke-width='4'/%3E%3Ccircle cx='45' cy='32' r='4' fill='%230A0A0A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta property="og:type" content="website">
 <meta property="og:title" content="JAPHOO — Order Caps & Graphic Tees">
-<meta property="og:description" content="Nepal-made graphic tees and caps. Bold. Playful. Never boring. Order over WhatsApp.">
+<meta property="og:description" content="The Perfect Bl~end of Nature & Art. Nepal-born graphic tees & caps — wearable art from Kathmandu. Order over WhatsApp.">
 <meta property="og:image" content="https://japhootheblend-netizen.github.io/JAPHOO/assets/tee-animal-berry.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <style>
   :root{
-    --ink:#1c1a17;
-    --paper:#f6f1e7;
+    --ink:#0A0A0A;
+    --charcoal:#3A3A3A;
+    --paper:#F2ECE1;
     --card:#ffffff;
-    --accent:#c9622a;
-    --accent-dark:#a3491b;
-    --line:#e4dccb;
+    --accent:#E4491F;
+    --accent-dark:#C13C17;
+    --ember:#F2924A;
+    --teal:#1C6B70;
+    --line:#e6dfce;
     --green:#25D366;
     --green-dark:#1ebe57;
     --muted:#7a7264;
+    --font-head:"Oswald",Impact,Haettenschweiler,sans-serif;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     background:var(--paper);
-    color:var(--ink);
+    color:var(--charcoal);
   }
   header{
     background:var(--ink);
@@ -396,6 +404,68 @@
   .card:hover img{transform:scale(1.045);}
   .qty-row .qbtn{width:30px; height:30px; font-size:16px;}
   .add-btn:hover{background:#000;}
+  /* Brand typography — condensed caps headers (Oswald), body stays Inter */
+  header h1,.section-title,.tab-btn,.add-btn,.whatsapp-btn,.sheet h2,.cart-total,.sizechart-btn,.cart-bar button,.count{
+    font-family:var(--font-head);
+  }
+  header h1{letter-spacing:4px; font-weight:700; font-size:32px;}
+  .section-title{letter-spacing:1.5px;}
+  .tab-btn{text-transform:uppercase; letter-spacing:1px;}
+  .add-btn{text-transform:uppercase; letter-spacing:1px; font-size:13px;}
+  .whatsapp-btn,.cart-bar button{letter-spacing:0.6px;}
+  header h1::after{
+    content:"";
+    display:block;
+    width:58px;
+    height:5px;
+    background:var(--accent);
+    border-radius:3px;
+    margin:10px auto 0;
+  }
+  .eye-mark{display:flex; justify-content:center; gap:12px; margin-bottom:10px;}
+  .eye-mark span{
+    width:22px; height:22px; border-radius:50%;
+    border:3px solid var(--paper);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .eye-mark span::after{content:""; width:7px; height:7px; border-radius:50%; background:var(--paper);}
+  .card-price{color:var(--accent);}
+  .trust{background:var(--ink);}
+  .footer-links{display:flex; justify-content:center; flex-wrap:wrap; gap:10px; padding:6px 16px 0;}
+  .link-btn{
+    background:#fff; border:1px solid var(--ink); color:var(--ink);
+    border-radius:999px; padding:9px 18px; font-weight:600; font-size:12px;
+    cursor:pointer; font-family:var(--font-head); letter-spacing:0.8px; text-transform:uppercase;
+  }
+  .link-btn:hover{background:var(--ink); color:#fff;}
+  .care-block{margin-bottom:18px;}
+  .care-block h3{
+    font-family:var(--font-head); text-transform:uppercase; letter-spacing:1px;
+    font-size:15px; margin:0 0 8px; color:var(--ink);
+    border-left:4px solid var(--accent); padding-left:10px;
+  }
+  .care-block ul{margin:0; padding-left:20px; font-size:13px; line-height:1.65; color:var(--charcoal);}
+  .care-block .bank{
+    background:#fff; border:1px solid var(--line); border-radius:10px;
+    padding:10px 12px; font-size:13px; line-height:1.6; margin-top:8px; color:var(--ink);
+  }
+  .care-block .bank b{color:var(--ink);}
+  .card img{cursor:zoom-in;}
+  .img-overlay{
+    position:fixed; inset:0; background:rgba(10,10,10,0.92);
+    display:none; align-items:center; justify-content:center;
+    flex-direction:column; z-index:60; padding:24px;
+  }
+  .img-overlay.visible{display:flex;}
+  .img-overlay img{max-width:100%; max-height:82vh; object-fit:contain; border-radius:12px;}
+  .img-overlay .cap{
+    color:var(--paper); font-family:var(--font-head); text-transform:uppercase;
+    letter-spacing:1px; margin-top:14px; font-size:15px;
+  }
+  .img-overlay .close-x{
+    position:absolute; top:16px; right:20px; background:none; border:none;
+    color:#fff; font-size:30px; line-height:1; cursor:pointer;
+  }
   .clear-cart{
     background:none;
     border:none;
@@ -415,8 +485,9 @@
 <body>
 
 <header>
-  <h1>Japhoo</h1>
-  <p>the bl~end of nature and art</p>
+  <div class="eye-mark" aria-hidden="true"><span></span><span></span></div>
+  <h1>JAPHOO</h1>
+  <p>The Perfect Bl~end of Nature &amp; Art</p>
 </header>
 
 <div class="trust"><b>Nepal-wide delivery</b> · Pay after Japhoo confirms your order on WhatsApp</div>
@@ -444,6 +515,10 @@
     <p class="no-results" id="teeNoResults" style="display:none;">No designs match that search.</p>
   </section>
 
+  <div class="footer-links">
+    <button class="link-btn" id="openCare">Care &amp; Info</button>
+    <button class="link-btn" id="openSizeChart2">Size Chart</button>
+  </div>
   <p class="footer-note">Prices shown are estimates — final total is confirmed by Japhoo over WhatsApp before payment.</p>
 </main>
 
@@ -457,7 +532,7 @@
     <button class="close-btn" id="closeSheet">&times;</button>
     <h2>Your Order</h2>
     <div id="cartItems"></div>
-    <div id="cartEmpty" class="empty-note" style="display:none;">Your cart is empty. Add something nice!</div>
+    <div id="cartEmpty" class="empty-note" style="display:none;">Cart's empty. Go find your fit.</div>
     <div id="clearRow" style="text-align:right; display:none;"><button class="clear-cart" id="clearCart">Clear all</button></div>
     <div class="cart-total"><span>Total</span><span>NPR <span id="sheetTotal">0</span></span></div>
 
@@ -496,6 +571,78 @@
       <div>
         <div class="label">Women</div>
         <img src="assets/sizechart-women.jpg" alt="Women size chart">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="img-overlay" id="imgOverlay">
+  <button class="close-x" id="closeImg">&times;</button>
+  <img id="imgZoom" src="" alt="">
+  <div class="cap" id="imgCap"></div>
+</div>
+
+<div class="overlay" id="careOverlay">
+  <div class="sheet sheet-wrap">
+    <button class="close-btn" id="closeCare">&times;</button>
+    <h2>Care &amp; Info</h2>
+
+    <div class="care-block">
+      <h3>T-Shirt Care</h3>
+      <ul>
+        <li>Wash inside out with similar colours</li>
+        <li>Cold / lukewarm water (under 30°C)</li>
+        <li>Mild detergent only — no bleach</li>
+        <li>Dry in shade, out of direct sunlight</li>
+        <li>Low / medium-heat iron</li>
+        <li>Don't stretch the fabric</li>
+        <li>Store folded, not hung</li>
+      </ul>
+    </div>
+
+    <div class="care-block">
+      <h3>Cap Care</h3>
+      <ul>
+        <li>Hand wash only — no machine wash</li>
+        <li>Mild detergent in warm (not hot) water</li>
+        <li>Soak 15–20 mins, gently brush dirty spots</li>
+        <li>Rinse thoroughly</li>
+        <li>Air dry in shape to avoid deforming</li>
+      </ul>
+    </div>
+
+    <div class="care-block">
+      <h3>Hoodie Care</h3>
+      <ul>
+        <li>Wash inside out with similar colours</li>
+        <li>Gentle cycle at 30°C, mild liquid detergent</li>
+        <li>No bleach; spin gently</li>
+        <li>Air dry only — shake &amp; reshape before hanging</li>
+        <li>Do not iron</li>
+      </ul>
+    </div>
+
+    <div class="care-block">
+      <h3>Exchange &amp; Returns</h3>
+      <ul>
+        <li>Exchange within 10 days (non-sale items only)</li>
+        <li>Items must be unworn, tagged &amp; in original packaging</li>
+        <li>Store credit issued — no cash refunds</li>
+      </ul>
+    </div>
+
+    <div class="care-block">
+      <h3>Payment Methods</h3>
+      <ul>
+        <li>Credit / Debit card — Visa, Mastercard, UnionPay (in-store)</li>
+        <li>Cash on Delivery — Nepal-wide</li>
+        <li>Fonepay QR</li>
+        <li>Bank deposit (details below)</li>
+      </ul>
+      <div class="bank">
+        <b>Bank:</b> NMB Bank<br>
+        <b>A/C Name:</b> SUKA REFORM PVT. LTD.<br>
+        <b>A/C No:</b> 1710148707700010
       </div>
     </div>
   </div>
@@ -616,6 +763,12 @@ function renderGrid(list, containerId){
     const product = list.find(p => p.id === id);
     const qtyEl = card.querySelector(".qty-val");
     let qty = 1;
+    card.querySelector("img").addEventListener("click", ()=>{
+      document.getElementById("imgZoom").src = product.img;
+      document.getElementById("imgZoom").alt = product.name;
+      document.getElementById("imgCap").textContent = product.name;
+      document.getElementById("imgOverlay").classList.add("visible");
+    });
     card.querySelector('[data-action="inc"]').addEventListener("click", () => {
       qty = Math.min(qty+1, 20);
       qtyEl.textContent = qty;
@@ -790,6 +943,16 @@ document.getElementById("clearCart").addEventListener("click", ()=>{
   cart = {};
   updateCartUI();
 });
+
+// care & info modal
+document.getElementById("openCare").addEventListener("click", ()=> document.getElementById("careOverlay").classList.add("visible"));
+document.getElementById("closeCare").addEventListener("click", ()=> document.getElementById("careOverlay").classList.remove("visible"));
+document.getElementById("careOverlay").addEventListener("click", (e)=>{ if(e.target.id==="careOverlay") document.getElementById("careOverlay").classList.remove("visible"); });
+document.getElementById("openSizeChart2").addEventListener("click", ()=> document.getElementById("sizeChartOverlay").classList.add("visible"));
+
+// image zoom lightbox
+document.getElementById("closeImg").addEventListener("click", ()=> document.getElementById("imgOverlay").classList.remove("visible"));
+document.getElementById("imgOverlay").addEventListener("click", (e)=>{ if(e.target.id==="imgOverlay") document.getElementById("imgOverlay").classList.remove("visible"); });
 </script>
 
 </body>
