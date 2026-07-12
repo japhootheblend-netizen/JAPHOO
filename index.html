@@ -466,6 +466,40 @@
     position:absolute; top:16px; right:20px; background:none; border:none;
     color:#fff; font-size:30px; line-height:1; cursor:pointer;
   }
+  .img-overlay .nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    background:rgba(255,255,255,0.12); border:none; color:#fff;
+    width:48px; height:48px; border-radius:50%; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .img-overlay .nav:hover{background:var(--accent);}
+  .img-overlay .prev{left:14px;}
+  .img-overlay .next{right:14px;}
+  /* add-to-cart toast */
+  .toast{
+    position:fixed; left:50%; bottom:88px; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#fff; padding:12px 18px; border-radius:999px;
+    font-size:13px; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.28);
+    opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+    z-index:70; display:flex; align-items:center; gap:8px; max-width:90vw;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .toast .dot{width:8px; height:8px; border-radius:50%; background:var(--accent); flex:none;}
+  /* scroll reveal (opacity only — keeps hover transform intact) */
+  .reveal{opacity:0; transition:opacity .55s ease;}
+  .reveal.in{opacity:1;}
+  /* cart bar pop */
+  @keyframes cartpop{0%{transform:scale(1);}35%{transform:scale(1.04);}100%{transform:scale(1);}}
+  .cart-bar.pop{animation:cartpop .35s ease;}
+  /* back to top */
+  .to-top{
+    position:fixed; right:16px; bottom:88px; width:44px; height:44px; border-radius:50%;
+    background:var(--ink); color:#fff; border:none; cursor:pointer;
+    display:none; align-items:center; justify-content:center; z-index:35;
+    box-shadow:0 6px 18px rgba(0,0,0,0.25);
+  }
+  .to-top.show{display:flex;}
+  .to-top:hover{background:var(--accent);}
   .clear-cart{
     background:none;
     border:none;
@@ -527,6 +561,9 @@
   <button id="openCartBtn">View Order</button>
 </div>
 
+<div class="toast" id="toast"><span class="dot"></span><span id="toastMsg">Added to your order</span></div>
+<button class="to-top" id="toTop" aria-label="Back to top"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
 <div class="overlay" id="overlay">
   <div class="sheet sheet-wrap">
     <button class="close-btn" id="closeSheet">&times;</button>
@@ -578,6 +615,8 @@
 
 <div class="img-overlay" id="imgOverlay">
   <button class="close-x" id="closeImg">&times;</button>
+  <button class="nav prev" id="lbPrev" aria-label="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <button class="nav next" id="lbNext" aria-label="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
   <img id="imgZoom" src="" alt="">
   <div class="cap" id="imgCap"></div>
 </div>
@@ -763,12 +802,7 @@ function renderGrid(list, containerId){
     const product = list.find(p => p.id === id);
     const qtyEl = card.querySelector(".qty-val");
     let qty = 1;
-    card.querySelector("img").addEventListener("click", ()=>{
-      document.getElementById("imgZoom").src = product.img;
-      document.getElementById("imgZoom").alt = product.name;
-      document.getElementById("imgCap").textContent = product.name;
-      document.getElementById("imgOverlay").classList.add("visible");
-    });
+    card.querySelector("img").addEventListener("click", ()=> openLightboxFromCard(card));
     card.querySelector('[data-action="inc"]').addEventListener("click", () => {
       qty = Math.min(qty+1, 20);
       qtyEl.textContent = qty;
@@ -786,6 +820,9 @@ function renderGrid(list, containerId){
       }
       cart[key].qty += qty;
       updateCartUI();
+      showToast(product.name);
+      const bar = document.getElementById("cartBar");
+      bar.classList.remove("pop"); void bar.offsetWidth; bar.classList.add("pop");
       const btn = e.target;
       btn.textContent = "Added ✓";
       btn.classList.add("added");
@@ -953,6 +990,64 @@ document.getElementById("openSizeChart2").addEventListener("click", ()=> documen
 // image zoom lightbox
 document.getElementById("closeImg").addEventListener("click", ()=> document.getElementById("imgOverlay").classList.remove("visible"));
 document.getElementById("imgOverlay").addEventListener("click", (e)=>{ if(e.target.id==="imgOverlay") document.getElementById("imgOverlay").classList.remove("visible"); });
+
+// ---- extra interactivity ----
+let lightboxList = [], lightboxIndex = 0;
+function openLightboxFromCard(card){
+  const grid = card.closest(".grid");
+  const cards = [...grid.querySelectorAll(".card")].filter(c => c.style.display !== "none");
+  lightboxList = cards.map(c => ({img:c.querySelector("img").src, name:c.querySelector(".card-name").textContent}));
+  lightboxIndex = Math.max(0, cards.indexOf(card));
+  showLightbox();
+}
+function showLightbox(){
+  const it = lightboxList[lightboxIndex]; if(!it) return;
+  document.getElementById("imgZoom").src = it.img;
+  document.getElementById("imgZoom").alt = it.name;
+  document.getElementById("imgCap").textContent = it.name + "  ·  " + (lightboxIndex+1) + "/" + lightboxList.length;
+  document.getElementById("imgOverlay").classList.add("visible");
+}
+function lbNav(dir){
+  if(!lightboxList.length) return;
+  lightboxIndex = (lightboxIndex + dir + lightboxList.length) % lightboxList.length;
+  showLightbox();
+}
+document.getElementById("lbPrev").addEventListener("click", (e)=>{ e.stopPropagation(); lbNav(-1); });
+document.getElementById("lbNext").addEventListener("click", (e)=>{ e.stopPropagation(); lbNav(1); });
+
+// add-to-cart toast
+let toastTimer;
+function showToast(name){
+  const t = document.getElementById("toast");
+  document.getElementById("toastMsg").textContent = "Added " + name + " to your order";
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove("show"), 1600);
+}
+
+// scroll reveal (with safety fallback so nothing stays hidden)
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } });
+}, {threshold:0.08});
+document.querySelectorAll(".card").forEach(c=>{ c.classList.add("reveal"); io.observe(c); });
+setTimeout(()=> document.querySelectorAll(".card.reveal:not(.in)").forEach(c=> c.classList.add("in")), 1600);
+
+// back to top
+const toTop = document.getElementById("toTop");
+window.addEventListener("scroll", ()=> toTop.classList.toggle("show", window.scrollY > 500));
+toTop.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
+
+// keyboard: ESC closes, arrows navigate the lightbox
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape"){
+    document.querySelectorAll(".overlay.visible").forEach(o=> o.classList.remove("visible"));
+    document.getElementById("imgOverlay").classList.remove("visible");
+  }
+  if(document.getElementById("imgOverlay").classList.contains("visible")){
+    if(e.key === "ArrowLeft") lbNav(-1);
+    if(e.key === "ArrowRight") lbNav(1);
+  }
+});
 </script>
 
 </body>
