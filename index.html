@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Japhoo — Order Now</title>
+<title>JAPHOO — Order Caps & Graphic Tees | Nepal-made</title>
+<meta name="description" content="JAPHOO — the blend of nature and art. Nepal-made graphic tees (NPR 1,400) and trucker caps (NPR 1,500). Order easily over WhatsApp, pay after we confirm.">
+<meta name="theme-color" content="#1c1a17">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JAPHOO — Order Caps & Graphic Tees">
+<meta property="og:description" content="Nepal-made graphic tees and caps. Bold. Playful. Never boring. Order over WhatsApp.">
+<meta property="og:image" content="https://japhootheblend-netizen.github.io/JAPHOO/assets/tee-animal-berry.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   :root{
     --ink:#1c1a17;
@@ -347,6 +354,62 @@
     letter-spacing:0.5px;
     color:var(--muted);
   }
+
+  /* --- Enhancements --- */
+  .trust{
+    background:#2a2621;
+    color:#e9e1d0;
+    text-align:center;
+    font-size:12px;
+    letter-spacing:0.3px;
+    padding:8px 16px;
+  }
+  .trust b{color:var(--accent);}
+  .tabs{
+    position:sticky;
+    top:0;
+    z-index:30;
+    background:var(--paper);
+    margin:0 auto;
+    padding:12px 16px;
+    max-width:none;
+    box-shadow:0 2px 10px rgba(0,0,0,0.04);
+  }
+  .tabs .tab-inner{display:flex; gap:10px; max-width:420px; margin:0 auto;}
+  .count{font-size:12px; font-weight:600; color:var(--muted); letter-spacing:0.5px;}
+  .search-input{
+    width:100%;
+    padding:11px 14px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    font-size:14px;
+    font-family:inherit;
+    background:#fff;
+    margin:0 4px 14px;
+    max-width:calc(100% - 8px);
+  }
+  .search-input:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent);}
+  .no-results{text-align:center; color:var(--muted); font-size:13px; padding:16px 0;}
+  .card{transition:transform .15s ease, box-shadow .15s ease;}
+  .card:hover{transform:translateY(-3px); box-shadow:0 10px 22px rgba(28,26,23,0.10);}
+  .card img{transition:transform .35s ease;}
+  .card:hover img{transform:scale(1.045);}
+  .qty-row .qbtn{width:30px; height:30px; font-size:16px;}
+  .add-btn:hover{background:#000;}
+  .clear-cart{
+    background:none;
+    border:none;
+    color:#b23b3b;
+    font-size:12px;
+    text-decoration:underline;
+    cursor:pointer;
+    padding:0;
+    margin:2px 0 4px;
+  }
+  @media (max-width:520px){
+    header h1{font-size:24px;}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+  }
 </style>
 </head>
 <body>
@@ -356,23 +419,29 @@
   <p>the bl~end of nature and art</p>
 </header>
 
+<div class="trust"><b>Nepal-wide delivery</b> · Pay after Japhoo confirms your order on WhatsApp</div>
+
 <div class="tabs">
-  <button class="tab-btn active" data-tab="caps">Caps</button>
-  <button class="tab-btn" data-tab="tees">T-Shirts</button>
+  <div class="tab-inner">
+    <button class="tab-btn active" data-tab="caps">Caps</button>
+    <button class="tab-btn" data-tab="tees">T-Shirts</button>
+  </div>
 </div>
 
 <main>
   <section id="tab-caps">
-    <div class="section-title">Caps · NPR 1,500</div>
+    <div class="section-title">Caps · NPR 1,500 <span class="count" id="capCount"></span></div>
     <div class="grid" id="grid-caps"></div>
   </section>
 
   <section id="tab-tees" style="display:none;">
     <div class="section-title-row">
-      <div class="section-title">T-Shirts · NPR 1,350</div>
+      <div class="section-title">T-Shirts · NPR 1,400 <span class="count" id="teeCount"></span></div>
       <button class="sizechart-btn" id="openSizeChart">Size Chart</button>
     </div>
+    <input type="search" id="teeSearch" class="search-input" placeholder="Search designs — Nepal, Everest, Vajra, Momo…" aria-label="Search T-shirt designs">
     <div class="grid" id="grid-tees"></div>
+    <p class="no-results" id="teeNoResults" style="display:none;">No designs match that search.</p>
   </section>
 
   <p class="footer-note">Prices shown are estimates — final total is confirmed by Japhoo over WhatsApp before payment.</p>
@@ -389,6 +458,7 @@
     <h2>Your Order</h2>
     <div id="cartItems"></div>
     <div id="cartEmpty" class="empty-note" style="display:none;">Your cart is empty. Add something nice!</div>
+    <div id="clearRow" style="text-align:right; display:none;"><button class="clear-cart" id="clearCart">Clear all</button></div>
     <div class="cart-total"><span>Total</span><span>NPR <span id="sheetTotal">0</span></span></div>
 
     <div class="field">
@@ -435,7 +505,7 @@
 const WHATSAPP_NUMBER = "9779851427975"; // +977 9851427975
 
 const CAP_PRICE = 1500;
-const TEE_PRICE = 1350;
+const TEE_PRICE = 1400;
 const SIZES = ["S","M","L","XL","XXL"];
 const UNISEX_ONLY_BASES = ["pool","3musk","thehood","mahaalife","jk","greed","fearme","battleground"];
 function genderOptionsFor(id){
@@ -595,6 +665,7 @@ function updateCartUI(){
   const itemsEl = document.getElementById("cartItems");
   const emptyEl = document.getElementById("cartEmpty");
   const keys = Object.keys(cart).filter(k=>cart[k].qty>0);
+  document.getElementById("clearRow").style.display = keys.length===0 ? "none" : "block";
   if(keys.length===0){
     itemsEl.innerHTML = "";
     emptyEl.style.display = "block";
@@ -695,6 +766,30 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
 renderGrid(caps, "grid-caps");
 renderGrid(tees, "grid-tees");
 updateCartUI();
+
+// design/style counts
+document.getElementById("capCount").textContent = `· ${caps.length} styles`;
+document.getElementById("teeCount").textContent = `· ${tees.length} designs`;
+
+// live search for tees (54 designs — big usability win)
+const teeSearch = document.getElementById("teeSearch");
+teeSearch.addEventListener("input", ()=>{
+  const q = teeSearch.value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll("#grid-tees .card").forEach(card=>{
+    const nm = card.querySelector(".card-name").textContent.toLowerCase();
+    const match = nm.includes(q);
+    card.style.display = match ? "" : "none";
+    if(match) shown++;
+  });
+  document.getElementById("teeNoResults").style.display = shown===0 ? "block" : "none";
+});
+
+// clear cart
+document.getElementById("clearCart").addEventListener("click", ()=>{
+  cart = {};
+  updateCartUI();
+});
 </script>
 
 </body>
