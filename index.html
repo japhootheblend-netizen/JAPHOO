@@ -530,6 +530,7 @@
   <div class="tab-inner">
     <button class="tab-btn active" data-tab="caps">Caps</button>
     <button class="tab-btn" data-tab="tees">T-Shirts</button>
+    <button class="tab-btn" data-tab="hoodies">Hoodies</button>
   </div>
 </div>
 
@@ -547,6 +548,11 @@
     <input type="search" id="teeSearch" class="search-input" placeholder="Search designs — Nepal, Everest, Vajra, Momo…" aria-label="Search T-shirt designs">
     <div class="grid" id="grid-tees"></div>
     <p class="no-results" id="teeNoResults" style="display:none;">No designs match that search.</p>
+  </section>
+
+  <section id="tab-hoodies" style="display:none;">
+    <div class="section-title">Hoodies · NPR 6,000 <span class="count" id="hoodieCount"></span></div>
+    <div class="grid" id="grid-hoodies"></div>
   </section>
 
   <div class="footer-links">
@@ -692,6 +698,7 @@ const WHATSAPP_NUMBER = "9779851427975"; // +977 9851427975
 
 const CAP_PRICE = 1500;
 const TEE_PRICE = 1400;
+const HOODIE_PRICE = 6000;
 const SIZES = ["S","M","L","XL","XXL"];
 const UNISEX_ONLY_BASES = ["pool","3musk","thehood","mahaalife","jk","greed","fearme","battleground"];
 function genderOptionsFor(id){
@@ -772,6 +779,10 @@ const tees = [
   {id:"tee-vk-p", name:"Vk P", img:"assets/tee-vk-p.jpg"},
   {id:"tee-yes-p", name:"Yes P", img:"assets/tee-yes-p.jpg"},
 ].map(p => ({...p, price:TEE_PRICE, hasSize:true, hasGender:true, genderOptions:genderOptionsFor(p.id)}));
+
+const hoodies = [
+  {id:"hoodie-1", name:"Everyday Hoodie", img:"assets/hoodie-1.jpg"},
+].map(p => ({...p, price:HOODIE_PRICE, hasSize:true}));
 
 let cart = {}; // key: id[:size] -> {name, price, qty, size}
 
@@ -950,16 +961,19 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     const tab = btn.dataset.tab;
     document.getElementById("tab-caps").style.display = tab==="caps" ? "block" : "none";
     document.getElementById("tab-tees").style.display = tab==="tees" ? "block" : "none";
+    document.getElementById("tab-hoodies").style.display = tab==="hoodies" ? "block" : "none";
   });
 });
 
 renderGrid(caps, "grid-caps");
 renderGrid(tees, "grid-tees");
+renderGrid(hoodies, "grid-hoodies");
 updateCartUI();
 
 // design/style counts
 document.getElementById("capCount").textContent = `· ${caps.length} styles`;
 document.getElementById("teeCount").textContent = `· ${tees.length} designs`;
+document.getElementById("hoodieCount").textContent = `· ${hoodies.length} style`;
 
 // live search for tees (54 designs — big usability win)
 const teeSearch = document.getElementById("teeSearch");
