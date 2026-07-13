@@ -615,6 +615,10 @@
         <div class="label">Women</div>
         <img src="assets/sizechart-women.jpg" alt="Women size chart">
       </div>
+      <div>
+        <div class="label">Hoodie (Heavy Oversized, Unisex)</div>
+        <img src="assets/sizechart-hoodie.jpg" alt="Hoodie size chart">
+      </div>
     </div>
   </div>
 </div>
@@ -781,8 +785,17 @@ const tees = [
 ].map(p => ({...p, price:TEE_PRICE, hasSize:true, hasGender:true, genderOptions:genderOptionsFor(p.id)}));
 
 const hoodies = [
-  {id:"hoodie-1", name:"Everyday Hoodie", img:"assets/hoodie-1.jpg"},
-].map(p => ({...p, price:HOODIE_PRICE, hasSize:true}));
+  {id:"hoodie-explore", name:"Explore Nepal", img:"assets/hoodie-explore.jpg"},
+  {id:"hoodie-kathmandu", name:"Kathmandu", img:"assets/hoodie-kathmandu.jpg"},
+  {id:"hoodie-nyatapola", name:"Nyatapola", img:"assets/hoodie-nyatapola.jpg"},
+  {id:"hoodie-durbar", name:"Durbar", img:"assets/hoodie-durbar.jpg"},
+  {id:"hoodie-newa", name:"Newa Culture", img:"assets/hoodie-newa.jpg"},
+  {id:"hoodie-kumari", name:"Kumari", img:"assets/hoodie-kumari.jpg"},
+  {id:"hoodie-lakhey", name:"Lakhey", img:"assets/hoodie-lakhey.jpg"},
+  {id:"hoodie-rolling", name:"Rolling Stones", img:"assets/hoodie-rolling.jpg"},
+  {id:"hoodie-heritage", name:"Heritage", img:"assets/hoodie-heritage.jpg"},
+  {id:"hoodie-signature", name:"Signature", img:"assets/hoodie-signature.jpg"},
+].map(p => ({...p, price:HOODIE_PRICE, hasSize:true, sizes:["XS","S","M","L","XL","XXL"]}));
 
 let cart = {}; // key: id[:size] -> {name, price, qty, size}
 
@@ -796,7 +809,7 @@ function renderGrid(list, containerId){
         <div class="card-price">NPR ${p.price.toLocaleString()}</div>
         <div class="card-controls">
           ${p.hasGender ? `<select class="gender-select">${p.genderOptions.map(g=>`<option value="${g}">${g}</option>`).join("")}</select>` : ""}
-          ${p.hasSize ? `<select class="size-select">${SIZES.map(s=>`<option value="${s}">${s}</option>`).join("")}</select>` : ""}
+          ${p.hasSize ? `<select class="size-select">${(p.sizes||SIZES).map(s=>`<option value="${s}">${s}</option>`).join("")}</select>` : ""}
           <div class="qty-row">
             <button class="qbtn" data-action="dec">−</button>
             <span class="qty-val">1</span>
@@ -973,7 +986,7 @@ updateCartUI();
 // design/style counts
 document.getElementById("capCount").textContent = `· ${caps.length} styles`;
 document.getElementById("teeCount").textContent = `· ${tees.length} designs`;
-document.getElementById("hoodieCount").textContent = `· ${hoodies.length} style`;
+document.getElementById("hoodieCount").textContent = `· ${hoodies.length} designs`;
 
 // live search for tees (54 designs — big usability win)
 const teeSearch = document.getElementById("teeSearch");
